@@ -6,3 +6,18 @@
   * https://github.com/andreacardybailey/responsive_example/blob/master/styles/responsive-base.css 
   *
 */
+
+.hide {
+  display: none;
+}
+
+body {
+ background-image: <img src="IMG_3847.jpeg"/>;
+ background-color: #cccccc;
+}
+
+h1 {
+  color: rgb(25, 60, 216);
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 45px;
+}
