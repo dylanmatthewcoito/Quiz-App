@@ -12,7 +12,7 @@
 }
 
 body {
- background-image: <img src="IMG_3847.jpeg"/>;
+ background-image: URL(IMG_3847.jpeg);
  background-color: #cccccc;
 }
 
