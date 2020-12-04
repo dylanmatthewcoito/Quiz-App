@@ -11,11 +11,13 @@
   display: none;
 }
 
-body {
- background-image: URL(IMG_3847.jpeg);
- background-color: #cccccc;
- background-repeat: no-repeat;
- background-size: 650px 450px;
+
+html { 
+  background: url(IMG_3847.jpeg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 h1 {
