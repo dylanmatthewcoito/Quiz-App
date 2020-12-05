@@ -1,135 +1,306 @@
 'use strict';
 
-const QUESTIONS = [
-  {
-    text: "Which of these countries have NOT vowed to use only 100% renewable energy by 2050?",
-    options: [ 'Afghanistan', 'Guatemala', 'Vietnam', 'Canada'],
-    correct: 3
-  },
-  {
-    text: "Which country has not run completely on renewable energy?",
-    options: [ 'The USA', 'Portugal', 'Costa Rica', 'Denmark'],
-    correct: 0
-  },
-  {
-    text: "Which of the following is NOT considered to be a source of renewable energy??",
-    options: [ 'Hydropower', 'Natural Gas', 'Wind', 'Solar'],
-    correct: 1
-  },
-  {
-    text: "Which of the following are negative impacts of using fossil fuels?",
-    options: [ 'They contribute to environmental degradation and pollution', 'They harm local communities', 'They contribute to human health problems', 'All of the above'],
-    correct: 3
-  },
-  {
-    text: "In 2016, about how much of the United State’s energy consumption derived from renewable sources?",
-    options: [ '1%', '10%', '40%', '70%'],
-    correct: 1
-  },
-  {
-    text: "In the United States, which is one of the fastest growing renewable energy sectors?",
-    options: [ 'Solar', 'Hydropower', 'Geothermal', 'None of the above'],
-    correct: 0
-  },
-  {
-    text: "Which US state has proposed to commit to 100% renewable energy electricity?",
-    options: [ 'Hawaii', 'California', 'Both Hawaii and California', 'None of the above'],
-    correct: 2
-  }
-];
 
-const STATE = {
+const store = {
+
+  questions: [
+    { // Question 1
+      question: 'Which of these countries have NOT vowed to use only 100% renewable energy by 2050?',
+        answers: [ 'Afghanistan', 'Guatemala', 'Vietnam', 'Canada'
+      ],
+      correctAnswer: 'Canada'
+    },
+    { // Question 2
+      question: 'Which country has not run completely on renewable energy?',
+      answers: [ 'The USA', 'Portugal', 'Costa Rica', 'Denmark'
+      ],
+      correctAnswer: 'The USA'
+    },
+    { // Question 3
+      question: 'Which of the following is NOT considered to be a source of renewable energy?',
+      answers: [ 'Hydropower', 'Natural Gas', 'Wind', 'Solar'
+      ],
+      correctAnswer: 'Natural Gas'
+    },
+    { // Question 4
+      question: 'Which of the following are negative impacts of using fossil fuels?',
+      answers: [ 'They contribute to environmental degradation and pollution', 'They harm local communities', 'They contribute to human health problems', 'All of the above'
+      ],
+      correctAnswer: 'All of the above'
+    },
+    { // Question 5
+      question: 'In 2016, about how much of the United State’s energy consumption derived from renewable sources?',
+      answers: [ '1%', '10%', '40%', '70%'
+      ],
+      correctAnswer: '10%'
+    },
+    { // Question 6
+      question: 'In the United States, which is one of the fastest growing renewable energy sectors?' ,
+      answers: [ 'Solar', 'Hydropower', 'Geothermal', 'None of the above'
+      ],
+      correctAnswer: 'Solar'
+    },
+    { // Question 7
+      question: 'Which US state has proposed to commit to 100% renewable energy electricity?',
+      answers: [ 'Hawaii', 'California', 'Both Hawaii and California', 'None of the above'
+      ],
+      correctAnswer: 'Both Hawaii and California'
+    }
+  ],
+  quizStarted: false,
+  questionNumber: 0,
+  submittingAnswer: false,
   score: 0,
-  current: 0
+
+  currentQuestionState: {
+    answerArray: []
+  }
 };
 
-function resetState() {
-  STATE.score = 0;
-  STATE.current = 0;
+
+function generateWelcomeString() {
+  return `
+  <div class="welcome">
+    <form>
+      <p>
+        Welcome User. Begin the quiz by pressing the button.
+      </p>
+      
+      <button type="submit"id="beginQuiz" autofocus>Begin Quiz</button>
+    </form>
+  </div>
+    `;
+}
+function generateQuizInterfaceString(questionObject) {
+  console.log(questionObject);
+  console.log(questionObject.question.answers);
+  return `
+    <div class='quiz-interface'>
+      <p>Question ${questionObject.index} out of ${store.questions.length}</p>
+      <p>
+       ${questionObject.question.question}
+      </p>
+
+      <form>
+      <ol type="A">
+        ${generateQuizAnswers(questionObject.question.answers)}
+      </ol>
+      <button type="submit" class="submit-answer">Submit Answer</button>
+      </form> 
+      <p>Score: ${store.score}</p>
+    </div>
+    `;
 }
 
-function optionHTML(text, qIndex, oIndex) {
-  return `<input type="radio" name="q${qIndex}" id="q${qIndex}-${oIndex}" value="${oIndex}"><label for="q${qIndex}=1">${text}</label>`;
-}
 
-function questionOptions(options, qIndex) {
-  var options = $(options.map((o, idx) => optionHTML(o.text, qIndex, idx)).join('<br/>')
-  );
-  options.first().attr('selected', 'selected');
-  return options;
-}
+function generateAnswerResults(){
+  let answerArray = store.currentQuestionState.answerArray;
 
+  const buttons = {
+    next: ' <button type="submit" class="next-question" autofocus>Next Question</button>',
+    results: '<button type="submit" class="see-results" autofocus>See Results</button>'
+  };
 
-function renderCurrentQuestion() {
-  $('#currentScore').text(`Score: ${STATE.score}`);
-  $('#nextQuestion').hide();
+  let correctResponse = `"${answerArray[1]}" is correct`;
+  let incorrectResponse = `${answerArray[2]} is not correct. The correct answer is<br><br>
+  "${answerArray[1]}"`;
 
-  const question = QUESTIONS[STATE.current];
-  $('#questionText').text(question.text);
-  $('#options').html(questionOptions(question.options, STATE.current));
+  let isLastQuestion = (store.questionNumber + 1) === (store.questions.length);
   
-}
-
-function questionSubmitted(e) {
-  e.preventDefault();
-  const valueSelected = Number(
-    $(`input[name=q${STATE.current}]:selected`).val()
-  );
-
-  if (Number.isNaN(valueSelected)) {
-    alert("Please select a option");
-    return;
-  }
-
-  const question = QUESTIONS[STATE.current];
-  if (valueSelected === question.correct) {
-    score++;
-    $('#nextQuestion > span').text('You are correct!');
-  } else {
-    const correctText = question.options[question.correct];
-    $('#nextQuestion > span').text(
-      `You are wrong :(. The correct answer was '${correctText}'`
-    );
-  }
-  $('#nextQuestion').show();
-}
-
-function renderEndScreen() {
-  $('#finalScore').text(STATE.score);
-  hideAll();
-  $('#endScreen').show();
-}
-
-function nextQuestion(e) {
-  e.preventDefault();
-  STATE.current++;
-
-  if (STATE.current >= QUESTIONS.length) {
-    renderEndScreen();
-  } else {
-    renderNextQuestion();
-  }
-}
-
-function hideAll() {
-  $('#startScreen').hide();
-  $('#endScreen').hide();
-  $('#questionScreen').hide();
+  return `
+    <div class="answer-response">
+    <form>
+    <p>${answerArray[0] === true ? correctResponse : incorrectResponse}</p>
+    <p> Score: ${store.score}</p>
+   ${isLastQuestion ? buttons.results : buttons.next}
+    </form>
+    </div>
+  `;
 }
 
 
-$(function() {
-  hideAll();
-  $('#startScreen').show(); 
-
-  $('.startQuiz').click((e) => {
-    e.preventDefault();
-    resetState();
-    hideAll();
-    renderCurrentQuestion();
-    $('#questionScreen').show();
+function generateQuizAnswers(answers){
+  let answerArray = [];
+  let indexArray = [];
+  answers.forEach(answer => {
+    answerArray.push(answer);
+    indexArray.push(answers.indexOf(answer));
   });
+  console.log(indexArray);
+  return answerArray.map(answer => stringifyAnswerArray(answer)).join('');
+}
 
-  $('#submitAnswer').click(questionSubmitted);
-  $('#nextQuestion > button').click(nextQuestion);
-});
+function stringifyAnswerArray(answer){
+  let questionNumber = store.questionNumber;
+  let name = store.questions[questionNumber].answers.indexOf(answer);
+  console.log(name);
+
+  return `
+    <li>
+      <div class="answer-container">
+      <input type="radio" name="answer" id="answer-${name}" data-answer="${answer}">
+      <label for="answer-${name}"> ${answer}</label>
+     
+      </div>
+    </li>
+  `;
+}
+
+function generateQuizResultsString(){
+  return `
+    <div class='quiz-results'>
+      <p>
+       The Quiz is over.
+         </p>
+          <p>You scored ${store.score} out of ${store.questions.length * 10}</p>            
+        <button class="restart-quiz">Restart Quiz</button>      
+    </div>   
+   ${generateImage()}  
+`;
+        }
+
+function generateImage(quizResults) {
+   return
+   console.log("I'm popping up after the quiz")
+      $('main').empty().append('<img src="IMG_3847.jpeg"')
+
+ }
+
+
+function renderQuiz () {
+
+  if(store.quizStarted === false) {
+    if(store.questionNumber === store.questions.length){
+      const quizResultsString = generateQuizResultsString();
+      const finalImage = generateImage();
+      $('main').html(quizResultsString); 
+    } else {
+      const quizWelcomeInterfaceString = generateWelcomeString();
+      $('main').html(quizWelcomeInterfaceString);
+    }
+  } else if (store.quizStarted === true) {
+    if(store.submittingAnswer === false) {
+      const quizInterfaceString = generateQuizInterfaceString(currentQuestion());
+      $('main').html(quizInterfaceString);
+    } else if (store.submittingAnswer === true) {
+      const quizAnswerResponseString = generateAnswerResults();
+      $('main').html(quizAnswerResponseString);
+    }
+  } 
+}
+
+
+function startQuiz() {
+  console.log('quiz has begun');
+  store.quizStarted = true;
+}
+
+
+function currentQuestion(){
+  let index = store.questionNumber;
+  let questionObject = store.questions[index];
+  return {
+    index: index +1,
+    question: questionObject
+  };
+}
+
+
+function nextQuestion(){
+  if (store.questionNumber < store.questions.length){
+    store.questionNumber++;
+    store.submittingAnswer =false;
+    console.log(store.questionNumber);
+  } else if(store.questionNumber === store.questions.length) {
+    store.quizStarted = false;
+  }
+}
+
+
+function validateCorrectAnswer() {
+  let radios = $('input:radio[name=answer]');
+  let selectedAnswer = $('input[name="answer"]:checked').data('answer');
+  let questionNumber = store.questionNumber;
+  let correctAnswer = store.questions[questionNumber].correctAnswer;
+
+  if (radios.filter(':checked').length === 0) {
+    alert('Please select an answer.');
+    return;
+  } else {
+    store.submittingAnswer = true;
+    if(selectedAnswer === correctAnswer){
+      store.score += 10;
+      store.currentQuestionState.answerArray = [true, correctAnswer, selectedAnswer];
+    } else {
+      store.currentQuestionState.answerArray = [false, correctAnswer, selectedAnswer];
+    }
+  }
+}
+
+function seeResults() {
+  store.quizStarted = false;
+  store.questionNumber ++;
+}
+
+function restartQuiz() {
+  store.quizStarted = false;
+  store.questionNumber = 0;
+  store.submittingAnswer = false;
+  store.currentQuestionState.answerArray = [];
+}
+
+
+function handleBeginQuizSubmit(){
+  
+  $('main').on('click', '#beginQuiz', (event) =>{
+    event.preventDefault();
+    startQuiz();
+    renderQuiz();
+  });
+}
+
+function handleSubmitAnswer() {
+  $('main').on('click' , '.submit-answer', (event)=>{
+    event.preventDefault();
+    console.log('submitting answer');
+    validateCorrectAnswer();
+    renderQuiz();
+  });
+}
+
+function handleNextQuestionSubmit(){
+  $('main').on('click', '.next-question', (event) => {
+    event.preventDefault();
+    nextQuestion();
+    renderQuiz();
+  });
+}
+
+function handleSeeResultsSubmit(){
+  $('main').on('click', '.see-results', (event) => {
+    event.preventDefault();
+    seeResults();
+    renderQuiz();
+  });
+}
+
+function handleRestartQuizSubmit(){
+  $('main').on('click', '.restart-quiz', (event) => {
+    event.preventDefault();
+    restartQuiz();
+    renderQuiz();
+  });
+}
+
+
+function handleQuiz (){
+  renderQuiz();
+  handleBeginQuizSubmit();
+  handleSubmitAnswer();
+  handleNextQuestionSubmit();
+  handleRestartQuizSubmit();
+  handleSeeResultsSubmit();
+}
+
+$(handleQuiz);
+
