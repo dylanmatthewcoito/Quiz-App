@@ -12,44 +12,14 @@
 </head>
 
 <body>
-  <header id="startScreen">
+  <header>
     <h1>Renewable Energy Quiz</h1>
-    <form> 
-      <button class="startQuiz" type="button">Start!</button>
-    </form>
   </header>
-
-  <main>
-    <div id="questionScreen">
-      <span id="currentScore">Score: 0</span>
-      <h2 id="questionText">Question, question, question.</h2>
-      <form id="questionForm">
-        <!-- all inputs need the same name (so you can select only 1) 
-             label's for need to match the input's id -->
-        <fieldset id="options">
-          <input type="radio" name="q0" id="q0-0" value="0" selected><label for="q0=0">Option A</label><br />
-          <input type="radio" name="q0" id="q0-1" value="1"><label for="q0=1">Option B</label><br />
-          <input type="radio" name="q0" id="q0-2" value="2"><label for="q0=2">Option C</label><br />
-          <input type="radio" name="q0" id="q0-3" value="3"><label for="q0=3">Option D</label>
-        </fieldset>
-
-        <button id="submitAnswer" type="button">Submit Answer</button>
-
-        <div id="nextQuestion">
-          <span>Your answer is right/wrong!</span>
-          <button type="button">Next</button>
-        </div>
-      </form>
-    </div>
-
-    <div id="endScreen">
-      <h1>Quiz is finished. Your Score is: <span id="finalScore"></span></h1>
-      <form>
-        <button class="startQuiz" type="button">Restart!</button> 
-      </form>
-    </div>
-  </main>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.js" crossorigin="anonymous"></script>
+  <main></main>
+  <script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
   <script src="app.js"></script>
 </body>
 
