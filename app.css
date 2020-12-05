@@ -7,10 +7,12 @@
   *
 */
 
-.hide {
-  display: none;
-}
 
+h1 {
+	text-align: center;
+	font-family: Arial, Helvetica, sans-serif;
+  margin-left: 20px;
+}
 
 html { 
   background: url(IMG_3847.jpeg) no-repeat center center fixed; 
@@ -20,8 +22,32 @@ html {
   background-size: cover;
 }
 
-h1 {
-  color: rgb(25, 60, 216);
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: 45px;
+p {
+  font-size:24px;
+}
+
+.welcome, .quiz-interface, .answer-response, .quiz-results {
+  margin: 20px;
+  padding: 26px;
+  border: 2px solid darkgoldenrod;
+  display: flex;
+  flex-direction: column;
+}
+
+ol li {
+  margin: 8px;
+  font-size: 24px;
+}
+
+input[type='radio'] {transform: scale(1.4)}
+
+
+.quiz-results {
+	text-align: center;
+}
+
+.submit-answer, #beginQuiz, .restart-quiz {
+	display: block;
+	text-align: center;
+	margin: 0 auto;
 }
